@@ -11,6 +11,7 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 import traceback
+from models.engine.file_storage import FileStorage
 
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
@@ -33,7 +34,7 @@ class HBNBCommand(cmd.Cmd):
     def preloop(self):
         """Prints if isatty is false"""
         if not sys.__stdin__.isatty():
-            print('(hbnb)', end = '')
+            print('(hbnb)')
 
     def precmd(self, line):
         """Reformat command line for advanced command syntax.
@@ -89,7 +90,7 @@ class HBNBCommand(cmd.Cmd):
     def postcmd(self, stop, line):
         """Prints if isatty is false"""
         if not sys.__stdin__.isatty():
-            print('(hbnb) ', end=' ')
+            print('(hbnb) ', end='')
         return stop
 
     def do_quit(self, command):
@@ -113,7 +114,7 @@ class HBNBCommand(cmd.Cmd):
         """ Overrides the emptyline method of CMD """
         pass
     
-    def do_create(self, args):
+    '''def do_create(self, args):
         """ Create an object of any class with parameters """
         if not args:
             print("** class name missing **")
@@ -160,11 +161,57 @@ class HBNBCommand(cmd.Cmd):
         try:
             # Create an instance of the specified class with the provided parameters
             new_instance = eval(class_name)(**params)
-            storage.save()
+            new_instance.save()
+            print(new_instance.id, " ")
+        except Exception as e:
+            print(f"Error creating object: {e}")
+            traceback.print_exc()
+    '''
+    def do_create(self, args):
+        """ Create an object of any class with parameters """
+        if not args:
+            print("** class name missing **")
+            return
+
+        # Split the input into class name and parameters
+        parts = args.split(" ")
+
+        if parts[0] not in HBNBCommand.classes:
+            print("** class doesn't exist **")
+            return
+
+        class_name = parts[0]
+        args = parts[1:]
+        params = {}
+
+        for arg in args:
+            param_split = arg.split('=')
+            if len(param_split) == 2:
+                key, value = param_split
+                if value.startswith('"') and value.endswith('"'):
+                    value = value[1:-1]
+                    value = value.replace('_', ' ')
+                    if '.' in value:
+                        try:
+                            value = float(value)
+                        except ValueError:
+                            pass
+                    else:
+                        try:
+                            value = int(value)
+                        except ValueError:
+                            pass
+                params[key] = value
+
+        try:
+            # Create an instance of the specified class with the provided parameters
+            new_instance = eval(class_name)(**params)
+            new_instance.save()
             print(new_instance.id)
         except Exception as e:
             print(f"Error creating object: {e}")
             traceback.print_exc()
+
 
     def help_create(self):
         """ Help information for the create method """
@@ -246,11 +293,12 @@ class HBNBCommand(cmd.Cmd):
             if args not in HBNBCommand.classes:
                 print("** class doesn't exist **")
                 return
-            for k, v in storage._FileStorage__objects.items():
+            cls = HBNBCommand.classes[args]
+            for k, v in storage.all(cls).items():
                 if k.split('.')[0] == args:
                     print_list.append(str(v))
         else:
-            for k, v in storage._FileStorage__objects.items():
+            for k, v in storage.all().items():
                 print_list.append(str(v))
 
         print(print_list)
@@ -359,6 +407,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
+    
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
