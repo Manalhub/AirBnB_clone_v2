@@ -8,9 +8,9 @@ from os import getenv
 
 class Place(BaseModel, Base):
     """ A place to stay """
+    __tablename__ = 'places'
 
     if getenv('HBNB_TYPE_STORAGE') == 'db':
-        __tablename__ = 'places'
         city_id = Column(String(60), ForeignKey('cities.id'), nullable=False)
         user_id = Column(String(60), ForeignKey('users.id'), nullable=False)
         name = Column(String(128), nullable=False)
@@ -60,7 +60,6 @@ class Place(BaseModel, Base):
             return [review for review in all_reviews.values()
                     if review.place_id == self.id]
 
-    if getenv('HBNB_TYPE_STORAGE') != 'db':
         @property
         def amenities(self):
             """ Getter attribute that returns the list of Amenity instances
