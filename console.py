@@ -13,6 +13,7 @@ from models.review import Review
 import traceback
 from models.engine.file_storage import FileStorage
 
+
 class HBNBCommand(cmd.Cmd):
     """ Contains the functionality for the HBNB console"""
 
@@ -113,8 +114,8 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """ Overrides the emptyline method of CMD """
         pass
-    
-    '''def do_create(self, args):
+
+        '''def do_create(self, args):
         """ Create an object of any class with parameters """
         if not args:
             print("** class name missing **")
@@ -157,16 +158,15 @@ class HBNBCommand(cmd.Cmd):
 
             # Add the key-value pair to the parameters dictionary
             params[param_key] = param_value
-
         try:
-            # Create an instance of the specified class with the provided parameters
+            # Create instance of the specified class with provided parameters
             new_instance = eval(class_name)(**params)
             new_instance.save()
             print(new_instance.id, " ")
         except Exception as e:
             print(f"Error creating object: {e}")
             traceback.print_exc()
-    '''
+        '''
     def do_create(self, args):
         """ Create an object of any class with parameters """
         if not args:
@@ -204,14 +204,13 @@ class HBNBCommand(cmd.Cmd):
                 params[key] = value
 
         try:
-            # Create an instance of the specified class with the provided parameters
+            # Create an instance of specified class with provided parameters
             new_instance = eval(class_name)(**params)
             new_instance.save()
             print(new_instance.id)
         except Exception as e:
             print(f"Error creating object: {e}")
             traceback.print_exc()
-
 
     def help_create(self):
         """ Help information for the create method """
@@ -407,7 +406,7 @@ class HBNBCommand(cmd.Cmd):
         """ Help information for the update class """
         print("Updates an object with new information")
         print("Usage: update <className> <id> <attName> <attVal>\n")
-    
+
 
 if __name__ == "__main__":
     HBNBCommand().cmdloop()

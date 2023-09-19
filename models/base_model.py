@@ -8,6 +8,7 @@ import models
 
 Base = declarative_base()
 
+
 class BaseModel:
     """A base class for all hbnb models"""
 
@@ -15,21 +16,6 @@ class BaseModel:
     created_at = Column(DateTime, nullable=False, default=datetime.utcnow())
     updated_at = Column(DateTime, nullable=False, default=datetime.utcnow())
 
-    '''def __init__(self, *args, **kwargs):
-        """Instantiates a new model"""
-        if not kwargs:
-            self.id = str(uuid.uuid4())
-            self.created_at = self.updated_at = datetime.utcnow()
-            storage.new(self)
-        else:
-            if "id" not in kwargs:
-                self.id = str(uuid.uuid4())
-            if "created_at" not in kwargs:
-                self.created_at = self.updated_at = datetime.utcnow()
-            for k, v in kwargs.items():
-                if k != "__class__":
-                    setattr(self, k, v)
-    '''
     def __init__(self, *args, **kwargs):
         """Instatntiates a new model"""
         if not kwargs:
@@ -50,26 +36,20 @@ class BaseModel:
             if "updated_at" not in kwargs:
                 self.updated_at = datetime.now()
 
-    '''def __str__(self):
-        """Returns a string representation of the instance"""
-        cls = self.__class__.__name__
-        return '[{}] ({}) {}'.format(cls, self.id, self.__dict__)
-    '''
     def __str__(self):
         """Returns a string representation of the instance"""
         cls_name = self.__class__.__name__
-        attrs = {}
-        for attr in self.__dict__:
-            if attr != '_sa_instance_state':
-                attrs[attr] = getattr(self, attr)
-        return '[{}] ({}) {}'.format(cls_name, self.id, attrs)
+        attributes = {}
+        for attribute in self.__dict__:
+            if attribute != '_sa_instance_state':
+                attributes[attribute] = getattr(self, attribute)
+        return '[{}] ({}) {}'.format(cls_name, self.id, attributes)
 
     def save(self):
         """Updates updated_at with current time when instance is changed"""
         self.updated_at = datetime.utcnow()
         models.storage.new(self)
         models.storage.save()
-        #storage.save()
 
     def to_dict(self):
         """Convert instance into dict format"""
@@ -83,4 +63,3 @@ class BaseModel:
     def delete(self):
         """Deletes the current instance from storage"""
         storage.delete(self)
-
