@@ -9,10 +9,6 @@ from models.place import Place
 from models.review import Review
 from os import getenv
 
-@unittest.skipIf(
-    os.getenv("HBNB_TYPE_STORAGE") != "db",
-    "Test is not relevant for DBStorage"
-)
 
 class TestDBStorage(unittest.TestCase):
 
