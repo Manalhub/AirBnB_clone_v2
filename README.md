@@ -2,6 +2,33 @@
 
 This repository contains the initial stage of a student project to build a clone of the AirBnB website. This stage implements a backend interface, or console, to manage program data. Console commands allow the user to create, update, and destroy objects, as well as manage file storage. Using a system of JSON serialization/deserialization, storage is persistent between sessions.
 
+Environment variables will be your best friend for this project!
+
+HBNB_ENV: running environment. It can be “dev” or “test” for the moment (“production” soon!) HBNB_MYSQL_USER: the username of your MySQL HBNB_MYSQL_PWD: the password of your MySQL HBNB_MYSQL_HOST: the hostname of your MySQL HBNB_MYSQL_DB: the database name of your MySQL HBNB_TYPE_STORAGE: the type of storage used. It can be “file” (using FileStorage) or db (using DBStorage)
+
+Project Details
+The project is structured with specific requirements in mind:
+
+The codebase is compatible with Python 3.8.5 and is executed on Ubuntu 20.04 LTS.
+All code files have the shebang line #!/usr/bin/python3.
+A README.md file is provided at the project's root folder.
+Code follows the PEP8 style guidelines for consistent formatting.
+All code files are executable.
+Modules, classes, and functions include documentation explaining their purpose.
+Unit Testing
+Testing is a crucial aspect of the project:
+
+Unit tests are organized in the "tests" folder and are written using the unittest module.
+Test files have the ".py" extension and begin with "test_".
+Tests are designed to ensure code correctness and robustness.
+When necessary, tests can be skipped using the skipIf feature of the unittest module.
+SQL Scripts
+The project includes SQL scripts for database interaction:
+
+SQL files are executed on MySQL 8.0 running on Ubuntu 20.04 LTS.
+SQLAlchemy version 1.4.x is used for database operations.
+SQL queries are documented with comments for clarity.
+
 ---
 
 <center><h3>Repository Contents by Project Task</h3> </center>
