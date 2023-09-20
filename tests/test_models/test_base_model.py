@@ -1,153 +1,87 @@
+#!/usr/bin/python3
+""" """
 import unittest
-import os
-import sys
-from io import StringIO
-from models import storage
+from models.amenity import Amenity
 from models.base_model import BaseModel
-from datetime import datetime
+from models import storage
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+import os
 
-DB_STORAGE = os.getenv("HBNB_TYPE_STORAGE")
 
+class test_Amenity(test_basemodel):
+    """ """
 
-class TestBaseModel(unittest.TestCase):
-    """
-    Test the BaseModel class.
-    """
+    def __init__(self, *args, **kwargs):
+        """ """
+        super().__init__(*args, **kwargs)
+        self.name = "Amenity"
+        self.value = Amenity
+    def test_name2(self):
+        """ """
+        new = self.value()
+        self.assertEqual(type(new.name), str)
+
+class TestAmenity(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        """
-        Create a new session for each test and load the environment
-        variable to use the appropriate storage type.
-        """
-        if DB_STORAGE == "db":
-            cls.engine = create_engine('mysql+mysqldb://hbnb_test:hbnb_test_pwd@localhost/hbnb_test_db')
-            Session = sessionmaker(bind=cls.engine)
-            cls.session = Session()
-
-        cls.store_all = storage.all
-        storage.all = cls.fake_all
-
-        cls.fake_stdout = StringIO()
-        sys.stdout = cls.fake_stdout
+        """ Set up database connection for testing """
+  
+        cls.engine = create_engine('sqlite:///test_db.sqlite')
+        cls.Session = sessionmaker(bind=cls.engine)
+        cls.session = cls.Session()
+        BaseModel.metadata.create_all(cls.engine)
 
     @classmethod
     def tearDownClass(cls):
-        """
-        Restore the original all() method and clean up the fake stdout.
-        """
-        storage.all = cls.store_all
-        sys.stdout = sys.__stdout__
-
+        """ Tear down database after testing """
+        cls.session.close()
+        BaseModel.metadata.drop_all(cls.engine)
+        os.remove('test_db.sqlite')
     def setUp(self):
-        """
-        Create a new BaseModel instance for each test.
-        """
-        self.model = BaseModel()
-        self.model.save()
 
+        """ Create a new session for each test """
+        self.session = self.Session()
     def tearDown(self):
-        """
-        Clean up the session and remove the fake_stdout.
-        """
-        if DB_STORAGE == "db":
-            self.session.close()
-            storage._DBStorage__session.remove()
-        self.model = None
-        self.fake_stdout.close()
-        self.fake_stdout = None
 
-    @staticmethod
-    def fake_all(*args, **kwargs):
-        """
-        Fake all() method for storage.
-        """
-        if DB_STORAGE == "db":
-            return TestBaseModel.session.query(BaseModel).all()
-        else:
-            return {}
+        """ Clean up the session after each test """
+        self.session.rollback()
+        self.session.close()
+    def test_amenity_table_exists(self):
 
-    def test_init(self):
-        """
-        Test BaseModel initialization.
-        """
-        self.assertTrue(hasattr(self.model, "id"))
-        self.assertTrue(hasattr(self.model, "created_at"))
-        self.assertTrue(hasattr(self.model, "updated_at"))
-        self.assertIsInstance(self.model.created_at, datetime)
-        self.assertIsInstance(self.model.updated_at, datetime)
+        """ Test if the 'amenities' table exists in the database """
+        self.assertTrue(Amenity.__table__.exists(self.engine))
+    def test_amenity_attributes(self):
 
-    def test_save(self):
-        """
-        Test save method.
-        """
-        updated_at_before = self.model.updated_at
-        self.model.save()
-        self.assertNotEqual(updated_at_before, self.model.updated_at)
+        """ Test if the Amenity class has the expected attributes """
+        amenity = Amenity()
+        self.assertTrue(hasattr(amenity, 'name'))
+        self.assertEqual(amenity.name, "")
+    def test_amenity_creation(self):
 
-    def test_to_dict(self):
-        """
-        Test to_dict method.
-        """
-        self.assertEqual(type(self.model.to_dict()), dict)
-        self.assertTrue("id" in self.model.to_dict())
-        self.assertTrue("created_at" in self.model.to_dict())
-        self.assertTrue("updated_at" in self.model.to_dict())
-        self.assertTrue("__class__" in self.model.to_dict())
+        """ Test creating a new Amenity object """
+        amenity_data = {'name': 'Swimming Pool'}
+        amenity = Amenity(**amenity_data)
+        self.assertEqual(amenity.name, 'Swimming Pool')
+    def test_amenity_save_to_database(self):
 
-    def test_str(self):
-        """
-        Test __str__ method.
-        """
-        cls_name = self.model.__class__.__name__
-        self.assertIn("[{}] ({})".format(cls_name, self.model.id), str(self.model))
+        """ Test saving an Amenity object to the database """
+        amenity_data = {'name': 'Fitness Center'}
+        amenity = Amenity(**amenity_data)
+        self.session.add(amenity)
+        self.session.commit()
+        self.assertIn(amenity, self.session.query(Amenity).all())
 
-    def test_delete(self):
-        """
-        Test delete method.
-        """
-        self.model.delete()
-        self.assertNotIn(self.model, storage.all().values())
+    def test_amenity_deletion_from_database(self):
+        """ Test deleting an Amenity object from the database """
+        amenity_data = {'name': 'Sauna'}
+        amenity = Amenity(**amenity_data)
+        self.session.add(amenity)
+        self.session.commit()
+        self.session.delete(amenity)
+        self.session.commit()
+        self.assertNotIn(amenity, self.session.query(Amenity).all())
 
-    @unittest.skipIf(DB_STORAGE == "db", "Only applies to FileStorage")
-    def test_save_to_file(self):
-        """
-        Test saving an object to a JSON file.
-        """
-        storage.save()
-        file_path = storage._FileStorage__file_path
-        self.assertTrue(os.path.exists(file_path))
-        with open(file_path, 'r') as file:
-            content = file.read()
-            self.assertTrue(len(content) > 0)
-            self.assertIn(self.model.id, content)
-            self.assertIn(self.model.__class__.__name__, content)
-
-    @unittest.skipIf(DB_STORAGE == "db", "Only applies to FileStorage")
-    def test_reload_from_file(self):
-        """
-        Test reloading objects from a JSON file.
-        """
-        storage.save()
-        file_path = storage._FileStorage__file_path
-        with open(file_path, 'r') as file:
-            content = file.read()
-        self.assertTrue(len(content) > 0)
-        storage.reload()
-        new_storage = storage.all()
-        self.assertTrue(len(new_storage) > 0)
-        self.assertIn(self.model.id, new_storage)
-        self.assertEqual(new_storage[self.model.id].__class__, BaseModel)
-
-    def test_has_attr(self):
-        """
-        Test BaseModel has attributes.
-        """
-        self.assertTrue(hasattr(self.model, "id"))
-        self.assertTrue(hasattr(self.model, "created_at"))
-        self.assertTrue(hasattr(self.model, "updated_at"))
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()

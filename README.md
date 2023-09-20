@@ -24,6 +24,49 @@ SQL files are executed on MySQL 8.0 running on Ubuntu 20.04 LTS.
 SQLAlchemy version 1.4.x is used for database operations.
 SQL queries are documented with comments for clarity.
 
+Key Learning Objectives
+As you work on this project, you will have the opportunity to learn and apply various important concepts and skills, including:
+
+Implementing unit testing in a large-scale project to ensure code reliability.
+Working with *args and **kwargs in Python for flexible function parameter handling.
+Handling named arguments in functions effectively.
+Creating and configuring a MySQL database for data storage.
+Managing user accounts and granting privileges in MySQL.
+Understanding Object-Relational Mapping (ORM) principles.
+Mapping Python classes to MySQL database tables.
+Handling two different storage engines (file and database) using a single codebase.
+Using environment variables for configuration management.
+
+Project Objectives:
+
+1. Environment Variable Usage
+An essential aspect of modern software development is configuration management. This project introduces the use of environment variables to control various aspects of the application, such as choosing between different storage engines and configuring database connections. Participants learn how to handle sensitive data securely and dynamically adjust application settings.
+
+2. Learning Object-Relational Mapping (ORM)
+The project introduces Object-Relational Mapping (ORM) principles, which facilitate the mapping of Python classes to database tables. By doing so, participants gain valuable experience in bridging the gap between object-oriented programming and relational databases, a crucial skill for any backend developer.
+
+3. Comprehensive Unit Testing
+Robust software relies on rigorous testing. This project emphasizes the importance of unit testing using the unittest module. Participants must ensure that the codebase passes unit tests flawlessly. This experience instills a culture of testing and quality assurance in software development.
+
+4. SQL and Database Management
+Understanding database management is paramount for a backend developer. The project includes SQL scripts and interactions with MySQL databases, offering hands-on experience in creating databases, managing user accounts, granting privileges, and executing SQL queries. Participants grasp the fundamentals of database administration.
+
+Technical Details
+1. Codebase and Editors
+The project is built using Python 3.8.5 and is designed to run on Ubuntu 20.04 LTS. Code files include a shebang line (#!/usr/bin/python3) for compatibility. Editors such as vi, vim, and emacs are utilized for code development.
+
+2. Coding Style
+Adherence to the PEP8 style guidelines (version 2.8.*) is a core requirement. Clean, well-formatted code is crucial for maintainability and collaboration.
+
+3. Unit Testing
+Unit tests are organized within the "tests" folder, employing the unittest module. Test files have the ".py" extension and follow a naming convention starting with "test_." Ensuring all tests pass without errors is a fundamental requirement.
+
+4. SQL Scripts
+SQL scripts are executed on MySQL 8.0, running on Ubuntu 20.04 LTS. SQLAlchemy version 1.4.x is employed for seamless database interactions. SQL queries are documented with comments for clarity and understanding.
+
+Collaboration and Learning
+Collaboration and teamwork are encouraged in this project. Participants can work together on test cases to ensure comprehensive coverage and address edge cases. Moreover, the project serves as a platform to enhance problem-solving skills and share knowledge within the developer community.
+
 ---
 
 <center><h3>Repository Contents by Project Task</h3> </center>
