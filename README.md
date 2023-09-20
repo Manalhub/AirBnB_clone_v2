@@ -4,8 +4,6 @@ This repository contains the initial stage of a student project to build a clone
 
 Environment variables will be your best friend for this project!
 
-HBNB_ENV: running environment. It can be “dev” or “test” for the moment (“production” soon!)
-
 ---
 
 <center><h3>Repository Contents by Project Task</h3> </center>
