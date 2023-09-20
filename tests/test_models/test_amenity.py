@@ -23,8 +23,17 @@ class test_Amenity(test_basemodel):
         new = self.value()
         self.assertEqual(type(new.name), str)
 
-class TestAmenity(unittest.TestCase):
+class test_inherit_basemodel(unittest.TestCase):
+    """Test if user inherit from BaseModel"""
+    def test_instance(self):
+        """check if user is an instance of BaseModel"""
+        user = Amenity()
+        self.assertIsInstance(user, Amenity)
+        self.assertTrue(issubclass(type(user), BaseModel))
+        self.assertEqual(str(type(user)), "<class 'models.amenity.Amenity'>")
 
+class TestAmenity(unittest.TestCase):
+    """document doc """
     @classmethod
     def setUpClass(cls):
         """ Set up database connection for testing """
@@ -82,6 +91,15 @@ class TestAmenity(unittest.TestCase):
         self.session.delete(amenity)
         self.session.commit()
         self.assertNotIn(amenity, self.session.query(Amenity).all())
+
+class Test_PEP8(unittest.TestCase):
+    """test User"""
+    def test_pep8_user(self):
+        """test pep8 style"""
+        pep8style = pycodestyle.StyleGuide(quiet=True)
+        result = pep8style.check_files(['models/amenity.py'])
+        self.assertEqual(result.total_errors, 0,
+                         "Found code style errors (and warnings).")
 
 if __name__ == '__main__':
     unittest.main()
